@@ -5,7 +5,6 @@ CREATE TABLE campaigns (
     title VARCHAR(200) NOT NULL,
     description VARCHAR(2000) NOT NULL,
     funding_goal DECIMAL(12,2) NOT NULL CHECK (funding_goal > 0),
-    category VARCHAR(50) NOT NULL,
     start_date DATE DEFAULT CURRENT_DATE NOT NULL,
     end_date DATE NOT NULL,
     status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'active', 'completed', 'cancelled')),
