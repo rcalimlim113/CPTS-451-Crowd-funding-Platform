@@ -19,7 +19,7 @@ CREATE TABLE campaigns (
     campaign_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     organizer_id INT NOT NULL REFERENCES users(user_id),
     title VARCHAR(200) NOT NULL,
-    description VARCHAR(2000) NOT NULL,
+    description CLOB NOT NULL,
     funding_goal DECIMAL(12,2) NOT NULL CHECK (funding_goal > 0),
     start_date DATE DEFAULT CURRENT_DATE NOT NULL,
     end_date DATE NOT NULL,
