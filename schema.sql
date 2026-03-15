@@ -1,0 +1,15 @@
+-- Campaigns table
+CREATE TABLE campaigns (
+    campaign_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    organizer_id INT NOT NULL REFERENCES users(user_id),
+    title VARCHAR(200) NOT NULL,
+    description VARCHAR(2000) NOT NULL,
+    funding_goal DECIMAL(12,2) NOT NULL CHECK (funding_goal > 0),
+    category VARCHAR(50) NOT NULL,
+    start_date DATE DEFAULT CURRENT_DATE NOT NULL,
+    end_date DATE NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'active', 'completed', 'cancelled')),
+    is_approved  BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CHECK (end_date > start_date)
+);
