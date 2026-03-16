@@ -1,5 +1,5 @@
 # Sprint 1 Report 
-Video Link: 
+Video Link: https://youtu.be/0q_NfhJ6u4Y
 ## What's New (User Facing)
  * US-001 User Registration
  * US-002 Create Campaign
