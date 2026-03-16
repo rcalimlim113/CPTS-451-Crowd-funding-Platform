@@ -93,3 +93,17 @@ SELECT
 FROM Campaigns c
 JOIN Users u ON c.organizer_id = u.user_id;
 -- Use with: SELECT * FROM admin_campaigns_view;
+
+-- Admin user view
+CREATE VIEW admin_users_view AS
+SELECT
+    user_id,
+    first_name,
+    last_name,
+    email,
+    role,
+    phone_number,
+    created_at,
+    is_active
+FROM Users;
+-- Use with: SELECT * FROM admin_users_view;
