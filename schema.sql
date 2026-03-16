@@ -1,3 +1,5 @@
+-- TABLES
+
 -- Users Table
 CREATE TABLE Users (
     user_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -28,3 +30,22 @@ CREATE TABLE campaigns (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CHECK (end_date > start_date)
 );
+
+-- VIEWS
+
+-- General user campaign view
+CREATE VIEW active_campaigns_view AS
+SELECT 
+    campaign_id,
+    title,
+    description,
+    funding_goal,
+    start_date,
+    end_date,
+    created_at
+FROM Campaigns
+WHERE is_active = TRUE
+AND is_approved = TRUE;
+-- Use with:
+SELECT * FROM active_campaigns_view;
+
