@@ -1,22 +1,22 @@
 US-001 User Registration – High Priority - Ryan
 Effort:
-Acceptance Criteria:
+Acceptance Criteria: user table implemented
 
 US-002 Create Campaign – High Priority – Lucas
 Effort:
-Acceptance Criteria:
+Acceptance Criteria: campaign table implemented
 
 US-003 Make a Donation – Medium Priority – Johnny
 Effort:
-Acceptance Criteria:
+Acceptance Criteria: donations table implemented
 
 US-004 View Donation History – Low Priority – Johnny
 Effort:
-Acceptance Criteria:
+Acceptance Criteria: donations table implemented
 
 US-005 Post Campaign Update – Low Priority - Lucas
 Effort:
-Acceptance Criteria:
+Acceptance Criteria: campaign 
 
 US-006 Admin Control – Medium Priority - Ryan
 Effort:
