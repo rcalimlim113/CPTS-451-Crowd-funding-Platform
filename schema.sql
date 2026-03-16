@@ -128,3 +128,27 @@ SELECT
 FROM Users;
 -- Use with:
 SELECT * FROM admin_users_view;
+
+
+-- Payment
+create table Payment_Methods(
+    payment_method_id INT PRIMARY KEY,
+    payment_token VARCHAR(100) NOT NULL,
+    method_type VARCHAR(50) NOT NULL
+);
+
+-- Donations
+create table Donations(
+    donation_id NUMBER PRIMARY KEY,
+    message VARCHAR2(500),
+    amount DECIMAL(10,2) NOT NULL CHECK (amount > 0),
+    donated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- donation time
+    payment_status VARCHAR(20) DEFAULT 'pending' CHECK (payment_status IN ('pending', 'completed', 'failed', 'refunded'))
+);
+
+-- Payment relationship
+-- create table payment{
+--      campaign fk
+--      donations fk
+--      users fk
+-- }
