@@ -12,32 +12,39 @@ Provide a one paragraph synposis of what your team accomplished this sprint. Don
 If applicable, explain the work you did not finish in this sprint. For issues/user stories in the current sprint that have not been closed, (a) any progress toward completion of the issues has been clearly tracked (by checking the checkboxes of  acceptance criteria), (b) a comment has been added to the issue to explain why the issue could not be completed (e.g., "we ran out of time" or "we did not anticipate it would be so much work"), and (c) the issue is added to a subsequent sprint, so that it can be addressed later.
 
 ## Completed Issues/User Stories
-Here are links to the issues that we completed in this sprint:
 
- * URL of issue 1
- * URL of issue 2
- * URL of issue n
+#### US-001 User Registration – High Priority - Ryan
+As a user, I want to be able to register an account to use the application.
 
- Desirables (Remove this section when you save the file):
-  * Each issue should be assigned to a milestone
-  * Each completed issue should be assigned to a pull request
-  * Each completed pull request should include a link to a "Before and After" video
-  * All team members who contributed to the issue should be assigned to it on GitHub
-  * Each issue should be assigned story points using a label
-  * Story points contribution of each team member should be indicated in a comment
- 
- ## Incomplete Issues/User Stories
- Here are links to issues we worked on but did not complete in this sprint:
- 
- * URL of issue 1 <<One sentence explanation of why issue was not completed>>
- * URL of issue 2 <<One sentence explanation of why issue was not completed>>
- * URL of issue n <<One sentence explanation of why issue was not completed>>
- 
- Examples of explanations (Remove this section when you save the file):
-  * "We ran into a complication we did not anticipate (explain briefly)." 
-  * "We decided that the feature did not add sufficient value for us to work on it in this sprint (explain briefly)."
-  * "We could not reproduce the bug" (explain briefly).
-  * "We did not get to this issue because..." (explain briefly)
+#### US-002 Create Campaign – High Priority – Lucas
+As an organizer, I want to be able to create campaigns.
+
+#### US-003 Make a Donation – Medium Priority – Johnny
+As a donator, I want to be able to make donations to the campaigns of my choosing.
+
+#### US-004 View Donation History – Low Priority – Johnny
+As a donor, I want to be able to see the history of my previous donations.
+
+#### US-005 Post Campaign Update – Low Priority
+As the organizer/owner of a campaign, I want to be able to post updates in the form of texts on a campaign so I can keep donors informed about the campaign.
+
+#### US-006 Admin Control – Medium Priority - Ryan
+As an admin, I want to be able to monitor campaigns, approve listings, and manage user accounts on the platform so I can maintain the platform’s integrity.
+
+#### US-007 Campaign Status – Medium Priority
+Campaigns automatically moving through pending, active, and completed based on dates.
+
+#### US-008 Cancel a Campaign – Medium Priority – Lucas 
+As an organizer, I want to be able to cancel a campaign before its end date.
+
+#### US-009 Share a Campaign on Social Media – Low priority 
+As a user, I want to share a campaign to social media, whether or not I am the owner of the campaign, so I can spread the campaign’s message further.
+
+#### US-010 Secure Payments – High priority – Johnny
+As a user, I want to make a donation with payment options of my choice in a secure fashion so I can support campaigns.
+
+#### US-011 Display all campaigns – High Priority – Lucas/Ryan
+Display all the active campaigns.
 
 ## Code Files for Review
 Please review the following code files, which were actively developed during this sprint, for quality:
