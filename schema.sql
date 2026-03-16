@@ -179,3 +179,24 @@ select * from campaigns
 
 select first_name, last_name, campaigns.title from campaigns, users
 where organizer_id = user_id
+
+-- test donations
+insert into donations
+values (1, 'Get well soon!', 50.13, CURRENT_TIMESTAMP, 'pending');
+
+-- test payment to user connection
+insert into PAYMENT_METHODS
+values (1, 'SECRETTOKEN', 'VISA', 2);
+
+select * from PAYMENT_METHODS;
+
+-- check user payment_method donations campaign connection
+insert into pays_to
+values (1, 1, 1, 2);
+
+select * from pays_to
+
+select (first_name || ' ' || last_name) as Name, donations.amount, method_type, campaigns.title 
+from campaigns, donations, payment_methods, users, pays_to
+where pays_to.donation_id = donations.donation_id and pays_to.payment_method_ID = payment_methods.payment_method_id
+    and pays_to.campaign_id = campaigns.campaign_id and pays_to.user_id = users.user_id;
