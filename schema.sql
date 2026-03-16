@@ -126,10 +126,3 @@ SELECT
     is_active
 FROM Users;
 -- Use with: SELECT * FROM admin_users_view;
-
--- View permissions
-GRANT SELECT ON active_campaigns_view TO user;
-GRANT SELECT, UPDATE ON user_campaigns_view TO user;
-
-GRANT SELECT, UPDATE ON admin_dashboard_view TO admin;
-GRANT SELECT, UPDATE ON admin_users_view TO admin;
