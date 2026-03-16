@@ -31,6 +31,25 @@ CREATE TABLE campaigns (
     CHECK (end_date > start_date)
 );
 
+-- Campaign Updates table
+CREATE TABLE campaign_updates (
+    campaign_id INT NOT NULL REFERENCES campaigns(campaign_id),
+    update_id INT NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    content CLOB NOT NULL,
+    posted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (campaign_id, update_id)
+);
+
+-- Campaign Share table
+CREATE TABLE campaign_share (
+    campaign_id INT NOT NULL REFERENCES campaigns(campaign_id),
+    share_id INT NOT NULL,
+    platform VARCHAR(50),
+    shared_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (campaign_id, share_id)
+);
+
 -- VIEWS
 
 -- General user campaign view
