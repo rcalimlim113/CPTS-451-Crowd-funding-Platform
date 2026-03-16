@@ -50,8 +50,6 @@ CREATE TABLE campaign_share (
     PRIMARY KEY (campaign_id, share_id)
 );
 
-
-
 -- Payment
 create table Payment_Methods(
     payment_method_id INT PRIMARY KEY,
@@ -68,6 +66,7 @@ create table Donations(
     payment_status VARCHAR(20) DEFAULT 'pending' CHECK (payment_status IN ('pending', 'completed', 'failed', 'refunded'))
 );
 
+-- Pays relationship
 create table pays_to(
     donation_id INT PRIMARY KEY,
     payment_method_id INT,
