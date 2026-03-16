@@ -95,7 +95,8 @@ SELECT
     status,
     created_at
 FROM Campaigns
-WHERE is_approved = TRUE;
+WHERE is_approved = TRUE
+AND status = 'active';
 -- Use with:
 SELECT * FROM active_campaigns_view;
 
