@@ -4,6 +4,7 @@ Video Link:
  * US-001 User Registration
  * US-002 Create Campaign
  * US-003 Make a Donation
+ * US-004 View Donation History
  * US-006 Admin Control
  * US-008 Cancel a Campaign
  * US-010 Secure Payments
