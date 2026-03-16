@@ -54,7 +54,9 @@ CREATE TABLE campaign_share (
 create table Payment_Methods(
     payment_method_id INT PRIMARY KEY,
     payment_token VARCHAR(100) NOT NULL,
-    method_type VARCHAR(50) NOT NULL
+    method_type VARCHAR(50) NOT NULL,
+    user_id INT,
+    CONSTRAINT fk_paymentMethods_to_users FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 -- Donations
