@@ -42,6 +42,7 @@ SELECT
     funding_goal,
     start_date,
     end_date,
+    status,
     created_at
 FROM Campaigns
 WHERE is_approved = TRUE;
@@ -58,6 +59,7 @@ SELECT
     c.funding_goal,
     c.start_date,
     c.end_date,
+    c.status,
     c.is_approved,
     c.created_at,
     u.user_id,
@@ -69,3 +71,25 @@ JOIN Users u ON c.organizer_id = u.user_id;
 SELECT * 
 FROM user_campaigns_view
 WHERE user_id = organizer_id;
+
+-- Admin campaign view
+CREATE VIEW admin_campaigns_view AS
+SELECT
+    c.campaign_id,
+    c.organizer_id,
+    c.title,
+    c.description,
+    c.funding_goal,
+    c.start_date,
+    c.end_date,
+    c.status,
+    c.is_approved,
+    c.created_at,
+    u.user_id,
+    u.first_name,
+    u.last_name,
+    u.email,
+    u.is_active AS user_status
+FROM Campaigns c
+JOIN Users u ON c.organizer_id = u.user_id;
+-- Use with: SELECT * FROM admin_campaigns_view;
