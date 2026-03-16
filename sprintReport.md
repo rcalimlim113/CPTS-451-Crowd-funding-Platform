@@ -1,15 +1,19 @@
 # Sprint 1 Report 
 Video Link: 
 ## What's New (User Facing)
- * Feature 1 or Bug Fix 1
- * Feature 2 or Bug Fix 2
- * Feature n or Bug Fix n
+ * US-001 User Registration
+ * US-002 Create Campaign
+ * US-003 Make a Donation
+ * US-006 Admin Control
+ * US-008 Cancel a Campaign
+ * US-010 Secure Payments
+ * US-011 Display all campaigns 
 
 ## Work Summary (Developer Facing)
-Provide a one paragraph synposis of what your team accomplished this sprint. Don't repeat the "What's New" list of features. Instead, help the instructor understand how you went about the work described there, any barriers you overcame, and any significant learnings for your team.
+For this sprint, in order to complete the above issues, we first had to convert our ER diagram to tables, in order to work on them within the database. After our database was set up, many of the features that we added are currently only sql queries on the database. The biggest difficulty was correctly setting up the database to represnt our ER diagram correctly, making sure to represent relationships, connectivity, cardinatlity, and attributes.
 
 ## Unfinished Work
-If applicable, explain the work you did not finish in this sprint. For issues/user stories in the current sprint that have not been closed, (a) any progress toward completion of the issues has been clearly tracked (by checking the checkboxes of  acceptance criteria), (b) a comment has been added to the issue to explain why the issue could not be completed (e.g., "we ran out of time" or "we did not anticipate it would be so much work"), and (c) the issue is added to a subsequent sprint, so that it can be addressed later.
+All the work assigned for this sprint has been completed.
 
 ## User Stories
 
@@ -52,16 +56,10 @@ Please review the following code files, which were actively developed during thi
  
 ## Retrospective Summary
 Here's what went well:
-  * Item 1
-  * Item 2
-  * Item x
+  * Dividing the work (ER diagram and table creation)
  
 Here's what we'd like to improve:
-   * Item 1
-   * Item 2
-   * Item x
+   * Time management
   
 Here are changes we plan to implement in the next sprint:
-   * Item 1
-   * Item 2
-   * Item x
+   * Weekly check-ins, to ensure we don't fall behind on sprints.
