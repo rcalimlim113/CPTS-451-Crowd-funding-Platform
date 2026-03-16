@@ -44,8 +44,28 @@ SELECT
     end_date,
     created_at
 FROM Campaigns
-WHERE is_active = TRUE
-AND is_approved = TRUE;
+WHERE is_approved = TRUE;
 -- Use with:
 SELECT * FROM active_campaigns_view;
 
+-- User created campaign view
+CREATE VIEW user_campaigns_view AS
+SELECT
+    c.campaign_id,
+    c.organizer_id,
+    c.title,
+    c.description,
+    c.funding_goal,
+    c.start_date,
+    c.end_date,
+    c.is_approved,
+    c.created_at,
+    u.user_id,
+    u.first_name,
+    u.last_name
+FROM Campaigns c
+JOIN Users u ON c.organizer_id = u.user_id;
+-- Use with:
+SELECT * 
+FROM user_campaigns_view
+WHERE user_id = organizer_id;
