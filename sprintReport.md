@@ -61,7 +61,9 @@ Here's what went well:
  
 Here's what we'd like to improve:
    * Time management
+   * Communicating work
   
 Here are changes we plan to implement in the next sprint:
    * Weekly check-ins, to ensure we don't fall behind on sprints.
    * Start work on the actual application.
+   * Make work plans for steady progress
