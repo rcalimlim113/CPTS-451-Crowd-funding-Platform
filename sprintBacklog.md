@@ -16,28 +16,28 @@
 
 ## US-005 Post Campaign Update – Low Priority - Lucas
 * Effort:
-* Acceptance Criteria: campaign 
+* Acceptance Criteria: campaign updates  table implemented
 
 ## US-006 Admin Control – Medium Priority - Ryan
 * Effort:
-* Acceptance Criteria:
+* Acceptance Criteria: Admin Views Implemented
 
 ## US-007 Campaign Status – Medium Priority - Lucas
 * Effort:
-* Acceptance Criteria:
+* Acceptance Criteria: campaigns table implemented
 
 ## US-008 Cancel a Campaign – Medium Priority – Lucas
 * Effort:
-* Acceptance Criteria:
+* Acceptance Criteria: campaigns table implemented
 
 ## US-009 Share a Campaign on Social Media – Low priority
 * Effort:
-* Acceptance Criteria:
+* Acceptance Criteria: cmapaign share table implemented
 
 ## US-010 Secure Payments – High priority – Johnny
 * Effort:
-* Acceptance Criteria:
+* Acceptance Criteria: payments table implemented
 
 ## US-011 Display all campaigns – High Priority – Lucas/Ryan
 * Effort:
-* Acceptance Criteria:
+* Acceptance Criteria: campaigns view (user and admin) implemented
