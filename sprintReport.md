@@ -65,8 +65,5 @@ Here's what we'd like to improve:
   
 Here are changes we plan to implement in the next sprint:
    * Weekly check-ins, to ensure we don't fall behind on sprints.
-<<<<<<< HEAD
    * Start work on the actual application.
    * Make work plans for steady progress
-=======
->>>>>>> 20c23b769286f1d058669ea1164e31ead764f430
