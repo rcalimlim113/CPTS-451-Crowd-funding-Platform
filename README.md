@@ -13,5 +13,9 @@ pip install Flask
 
 1. Install python 3.10 or above (3.12 used here)
 2. pip install Flask
-3. flask --app core/app.py run
+3. flask --app application/main.py run
 4. Follow the web link to see the website
+
+### Additional 
+The program utilizes Jinja for templates
+
