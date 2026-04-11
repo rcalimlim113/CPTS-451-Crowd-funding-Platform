@@ -1,11 +1,11 @@
 -- drop if existing (for testing)
-DROP TABLE IF EXISTS Users;
-DROP TABLE IF EXISTS campaigns;
 DROP TABLE IF EXISTS campaign_updates;
 DROP TABLE IF EXISTS campaign_share;
+DROP TABLE IF EXISTS Pays_to;
 DROP TABLE IF EXISTS PAYMENT_METHODS;
 DROP TABLE IF EXISTS Donations;
-DROP TABLE IF EXISTS Pays_to;
+DROP TABLE IF EXISTS campaigns;
+DROP TABLE IF EXISTS users;
 
 -- TABLES
 
