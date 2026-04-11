@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS users;
 
 -- Users Table
 CREATE TABLE Users (
-    user_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -27,7 +27,7 @@ CREATE TABLE Users (
 
 -- Campaigns table
 CREATE TABLE campaigns (
-    campaign_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    campaign_id INTEGER PRIMARY KEY AUTOINCREMENT,
     organizer_id INT NOT NULL REFERENCES users(user_id),
     title VARCHAR(200) NOT NULL,
     description CLOB NOT NULL,
