@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 from . import db
 
 #app = Flask(__name__)
@@ -25,10 +25,16 @@ def create_app(test_config=None):
     os.makedirs(app.instance_path, exist_ok=True)
 
     
-    # load hello.html page
+    # load campaigns.html page
     @app.route("/")
-    def hello():
-        return render_template('hello.html')
+    def index():
+        db_conn = db.get_db()
+        campaigns = db_conn.execute("""
+            SELECT c.*, u.first_name || ' ' || u.last_name AS organizer_name
+            FROM campaigns c
+            JOIN users u ON c.organizer_id = u.user_id
+        """).fetchall()
+        return render_template('campaigns.html', campaigns=campaigns)
 
     # load tempName.html page
     @app.route('/login', methods=['GET', 'POST'])
@@ -45,4 +51,3 @@ def create_app(test_config=None):
 
 
     return app
-
