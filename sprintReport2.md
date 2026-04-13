@@ -53,8 +53,8 @@ Display all the active campaigns.
 ## Code Files for Review
 Please review the following code files, which were actively developed during this sprint, for quality:
  * [schema.sql](LINK HERE)
- * [_pychache_](link here)
- * [_init_.py](link here)
+ * [pychache](link here)
+ * [init.py](link here)
  * [db.py](link here)
  
 ## Retrospective Summary
