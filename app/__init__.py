@@ -90,9 +90,9 @@ def create_app(test_config=None):
         try:
             db_conn = db.get_db()
             db_conn.execute("""
-                INSERT INTO donations (donation_id, amount, payment_status, message)
-                VALUES (?, ?, ?, ?)
-            """, [d['donation_id'], d['amount'], d['payment_status'], d.get('message')])
+                INSERT INTO donations (donation_id, campaign_id, amount, payment_status, message)
+                VALUES (?, ?, ?, ?, ?)
+            """, [d['donation_id'], d['campaign_id'], d['amount'], d['payment_status'], d.get('message')])
             db_conn.commit()
             return jsonify({'status': 'success', 'message': 'Donation added successfully'})
         except sqlite3.IntegrityError as e:
