@@ -90,7 +90,11 @@ async function runQuery(id) {
   if (id.toString().startsWith('b')) {
     logic = "Basic CRUD operation demonstrating data persistence.";
   } else {
-    logic = `<strong>Join:</strong> ${data.why_join || ""}`;
+  logic = `<strong>JOIN:</strong> ${data.why_join || "N/A"}`;
+  // Add GROUP BY logic only if it exists
+    if (data.why_groupby) {
+    logic += `<br><strong>GROUP BY:</strong> ${data.why_groupby}`;
+    }
   }
   document.getElementById('r-why').innerHTML = logic;
 

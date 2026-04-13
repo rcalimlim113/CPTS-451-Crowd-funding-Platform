@@ -51,7 +51,7 @@ def create_app(test_config=None):
 
     @app.route('/api/crud/<table>', methods=['GET'])
     def crud_read(table):
-        ALLOWED = ['users', 'campaigns', 'donations', 'payment_methods', 'pays_to', 'campaign_updates']
+        ALLOWED = ['users', 'campaigns', 'donations', 'payment_methods', 'user_donations', 'campaign_updates']
         if table not in ALLOWED:
             return jsonify({'error': 'Table not allowed'}), 400
         rows = db.get_db().execute(f"SELECT * FROM {table}").fetchall()
@@ -114,7 +114,7 @@ def create_app(test_config=None):
 
     @app.route('/api/delete/<table>/<int:id>', methods=['DELETE'])
     def delete_record(table, id):
-        ALLOWED = {'users': 'user_id', 'campaigns': 'campaign_id', 'donations': 'donation_id', 'payment_methods' : 'payment_method_id'}
+        ALLOWED = {'users': 'user_id', 'campaigns': 'campaign_id', 'donations': 'donation_id', 'payment_methods' : 'payment_method_id', 'user_donations': 'donation_id'}
         if table not in ALLOWED:
             return jsonify({'status': 'error', 'message': 'Invalid table'}), 400
         try:
@@ -171,46 +171,54 @@ def create_app(test_config=None):
             'b12': ("Donation Ledger", "SELECT * FROM donations", "Viewing every donation.", "", ""),
             # --- ADVANCED RETRIEVAL ---
             '1': ("User Donation History", 
-                  "SELECT donations.amount, method_type, campaigns.title FROM campaigns, donations, payment_methods, pays_to WHERE pays_to.donation_id = donations.donation_id AND pays_to.payment_method_ID = payment_methods.payment_method_id AND pays_to.campaign_id = campaigns.campaign_id AND pays_to.user_id = 2", 
-                  "This should show a donation amount, payment method type, and the campaign title that a certain user has donated.", 
-                  "This join is required to be able to pull the title of each campaign, the amount they donated, and the method from the separate tables that each one is stored in.", ""),
+                "SELECT donations.amount, payment_methods.method_type, campaigns.title FROM donations, payment_methods, campaigns, user_donations WHERE user_donations.donation_id = donations.donation_id AND user_donations.payment_token = payment_methods.payment_token AND donations.campaign_id = campaigns.campaign_id AND user_donations.user_id = 2", 
+                "Shows donation amount, payment method, and campaign for a specific user.", 
+                "Amount is in donations, method type is in payment_methods, title is in campaigns — JOIN links all three for one user.", ""),
+
             '2': ("Organizer Directory", 
-                  "SELECT campaigns.title, (first_name || ' ' || last_name) AS Name FROM campaigns, users WHERE campaigns.organizer_id = users.user_id", 
-                  "Shows all campaigns and their associated organizer's full name.", 
-                  "Required since name is not stored in the campaigns table.", ""),
+                "SELECT campaigns.title, (first_name || ' ' || last_name) AS Name FROM campaigns, users WHERE campaigns.organizer_id = users.user_id", 
+                "Shows all campaigns and their associated organizer's full name.", 
+                "Organizer name is stored in users, not in campaigns — JOIN connects them by organizer_id.", ""),
+
             '3': ("Campaign Ledger", 
-                  "SELECT donations.amount, donations.donated_at, donations.message FROM campaigns, donations, pays_to WHERE campaigns.campaign_id = 1 AND donations.donation_id = pays_to.donation_id", 
-                  "Shows all donations for a specific campaign with amount, time, and message.", 
-                  "Required because the donations table does not have a campaign_id associated with it.", ""),
+                "SELECT donations.amount, donations.donated_at, donations.message, campaigns.title, (users.first_name || ' ' || users.last_name) AS organizer FROM donations, campaigns, users WHERE donations.campaign_id = campaigns.campaign_id AND campaigns.organizer_id = users.user_id AND campaigns.campaign_id = 1", 
+                "Shows all donations for a campaign along with the campaign title and organizer name.", 
+                "Donations link to campaigns via campaign_id, and campaigns link to users via organizer_id — combining all three gives full context.", ""),
+
             '4': ("Campaign Update Feed", 
-                  "SELECT campaigns.title AS Campaign_Name, campaign_updates.title AS Update_Headline, campaign_updates.content FROM campaigns, campaign_updates WHERE campaigns.campaign_id = campaign_updates.campaign_id AND campaigns.campaign_id = 1", 
-                  "Shows all updates for a specific campaign.", 
-                  "Required to pull attributes from both tables for a single campaign's view.", 
-                  ""),
+                "SELECT campaigns.title AS Campaign_Name, campaign_updates.title AS Update_Headline, campaign_updates.content FROM campaigns, campaign_updates WHERE campaigns.campaign_id = campaign_updates.campaign_id AND campaigns.campaign_id = 1", 
+                "Shows all updates for a specific campaign.", 
+                "Update content is in campaign_updates, campaign title is in campaigns — JOIN links them by campaign_id.", ""),
+
             '5': ("Card Transaction Audit", 
-                  "SELECT payment_methods.payment_method_id, payment_methods.method_type, donations.amount FROM donations, payment_methods, pays_to WHERE pays_to.donation_id = donations.donation_id AND pays_to.payment_method_id = 1", 
-                  "Shows a specific card's donation history.", 
-                  "Required as amount is not stored in the payment table.", ""),
+                "SELECT payment_methods.payment_method_id, payment_methods.method_type, donations.amount FROM donations, payment_methods, user_donations WHERE user_donations.donation_id = donations.donation_id AND user_donations.payment_token = payment_methods.payment_token AND payment_methods.payment_method_id = 1", 
+                "Shows a specific card's donation history.", 
+                "Amount is in donations, card type is in payment_methods — JOIN through user_donations connects them by payment token.", ""),
+
             '6': ("Public Feed", 
-                  "SELECT (first_name || ' ' || last_name) AS Name, campaigns.title FROM campaigns, donations, users, pays_to WHERE pays_to.donation_id = donations.donation_id AND pays_to.campaign_id = campaigns.campaign_id AND pays_to.user_id = users.user_id", 
-                  "Shows who has donated to what campaign.", 
-                  "Joins multiple tables to confirm donations and user info.", ""),
+                "SELECT (first_name || ' ' || last_name) AS Name, campaigns.title FROM campaigns, donations, users, user_donations WHERE user_donations.donation_id = donations.donation_id AND donations.campaign_id = campaigns.campaign_id AND user_donations.user_id = users.user_id", 
+                "Shows who has donated to what campaign.", 
+                "Donor names are in users, campaign titles are in campaigns — user_donations and donations bridge them together.", ""),
+
             '7': ("Organizer Contact Sheet", 
-                  "SELECT campaigns.title, (first_name || ' ' || last_name) AS Name, users.email FROM campaigns, users WHERE campaigns.organizer_id = users.user_id", 
-                  "Shows campaign title along with organizer contact info.", 
-                  "Combines attributes from two tables into one view.", ""),
+                "SELECT campaigns.title, (first_name || ' ' || last_name) AS Name, users.email FROM campaigns, users WHERE campaigns.organizer_id = users.user_id", 
+                "Shows campaign title along with organizer contact info.", 
+                "Email and name are in users, campaign title is in campaigns — JOIN connects organizer info to their campaigns.", ""),
+
             '8': ("Social Platform Reach", 
-                  "SELECT campaigns.title, campaign_share.platform FROM campaigns, campaign_share WHERE campaigns.campaign_id = campaign_share.campaign_id", 
-                  "Shows every platform a campaign has been shared on.", 
-                  "Joins platform data not stored in the main campaign table.", ""),
+                "SELECT campaigns.title, campaign_share.platform FROM campaigns, campaign_share WHERE campaigns.campaign_id = campaign_share.campaign_id", 
+                "Shows every platform a campaign has been shared on.", 
+                "Platform data is stored in campaign_share, not in campaigns — JOIN links them by campaign_id.", ""),
+
             '9': ("Total Campaign Funds", 
-                  "SELECT SUM(donations.amount) FROM campaigns, donations, pays_to WHERE campaigns.campaign_id = 1 AND pays_to.donation_id = donations.donation_id AND pays_to.campaign_id = campaigns.campaign_id", 
-                  "Calculates the sum of donations for a campaign.", 
-                  "Required to aggregate data across multiple tables.", ""),
+                "SELECT campaigns.title, SUM(donations.amount) AS total_raised FROM campaigns, donations WHERE campaigns.campaign_id = donations.campaign_id GROUP BY campaigns.campaign_id, campaigns.title", 
+                "Calculates the total donations received for each campaign.", 
+                "Donations contain amounts and campaigns contain titles — combining them allows aggregation per campaign.", "Grouped so that totals are calculated per campaign instead of across all campaigns."),
+
             '10': ("Organizer Message Digest", 
-                   "SELECT campaigns.title, donations.message FROM campaigns, donations, pays_to WHERE pays_to.campaign_id = campaigns.campaign_id AND pays_to.donation_id = donations.donation_id AND organizer_id = 1", 
-                   "Shows all messages for all campaigns owned by an organizer.", 
-                   "Bridges donation messages and campaign titles through the pays_to relationship.", "")
+                "SELECT campaigns.title, donations.message FROM campaigns, donations WHERE donations.campaign_id = campaigns.campaign_id AND campaigns.organizer_id = 1", 
+                "Shows all donation messages for every campaign owned by a specific organizer.", 
+                "Messages are in donations, campaign titles are in campaigns — JOIN links them by campaign_id.", "")
         }
 
         if query_id not in QUERIES:
@@ -227,7 +235,8 @@ def create_app(test_config=None):
                     'label': label, 
                     'sql': sql, 
                     'scenario': scenario, 
-                    'why_join': why_join, 
+                    'why_join': why_join,
+                    'why_groupby' : why_groupby,
                     'rows': []
                 })
             
@@ -236,7 +245,8 @@ def create_app(test_config=None):
                 'label': label, 
                 'sql': sql, 
                 'scenario': scenario, 
-                'why_join': why_join, 
+                'why_join': why_join,
+                'why_groupby' : why_groupby,
                 'rows': [dict(r) for r in rows]
             })
         except Exception as e:
@@ -280,7 +290,10 @@ def create_app(test_config=None):
                 db_conn.commit()
 
             elif case == 'delete_with_deps':
-                db_conn.execute("DELETE FROM users WHERE user_id = 1")
+                db_conn.execute("INSERT OR IGNORE INTO users (user_id, first_name, last_name, email, password_hash, role) VALUES (777, 'Dep', 'User', 'dep@test.com', 'hash', 'user')")
+                db_conn.execute("INSERT OR IGNORE INTO campaigns (organizer_id, title, description, funding_goal, end_date) VALUES (777, 'Dep Campaign', 'Test', 100, '2027-01-01')")
+                db_conn.commit()
+                db_conn.execute("DELETE FROM users WHERE user_id = 777")
                 db_conn.commit()
 
             return jsonify({'status': 'FAILED', 'note': 'Constraint should have blocked this!'})

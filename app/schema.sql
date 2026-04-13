@@ -1,10 +1,9 @@
 -- drop if existing (for testing)
 DROP TABLE IF EXISTS campaign_updates;
 DROP TABLE IF EXISTS campaign_share;
---DROP TABLE IF EXISTS Pays_to;
 DROP TABLE IF EXISTS user_donations;
-DROP TABLE IF EXISTS PAYMENT_METHODS;
 DROP TABLE IF EXISTS Donations;
+DROP TABLE IF EXISTS Payment_Methods;
 DROP TABLE IF EXISTS campaigns;
 DROP TABLE IF EXISTS users;
 
@@ -71,7 +70,7 @@ create table Payment_Methods(
 
 -- Donations
 create table Donations(
-    donation_id NUMBER PRIMARY KEY,
+    donation_id INT PRIMARY KEY,
     message VARCHAR2(500),
     amount DECIMAL(10,2) NOT NULL CHECK (amount > 0),
     donated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- donation time
@@ -109,7 +108,7 @@ VALUES
 (2, 'John', 'Smith', 'johnS@gmail.com', 'password1234', 'user', '123-456-7890', 1),
 (3, 'Jane', 'Doe', 'jane.doe@example.com', 'securepass', 'user', '509-555-9999', 1);
 
--- Campaigns (Matches your NOT NULL requirements)
+-- Campaigns
 INSERT INTO campaigns (campaign_id, organizer_id, title, description, funding_goal, start_date, end_date, status, is_approved)
 VALUES 
 (1, 1, 'Pullman Park Clean-up', 'Community effort to clean local trails.', 1000.00, '2026-04-01', '2026-07-01', 'active', 1),
@@ -121,14 +120,13 @@ VALUES
 (1, 2, 'tok_visa_111', 'VISA'),
 (2, 3, 'tok_paypal_222', 'PayPal');
 
--- Donations (Matches your column order: donations id, message, amount, time, status, campaign id)
+-- Donations 
 INSERT INTO donations (donation_id, message, amount, donated_at, payment_status, campaign_id)
 VALUES 
 (1, 'Keep up the good work!', 600.00, '2026-04-11 10:00:00', 'completed', 1),
 (2, 'Happy to help.', 50.13, '2026-04-12 14:30:00', 'completed', 2);
 
--- User Donations Relationship (Links everything together)
--- (donation_id, user_id, payment_token)
+-- User Donations Relationship
 INSERT INTO user_donations (donation_id, user_id, payment_token)
 VALUES 
 (1, 2, 'tok_visa_111'),
@@ -138,7 +136,7 @@ VALUES
 INSERT INTO campaign_updates (campaign_id, update_id, title, content)
 VALUES (1, 1, 'Almost there!', 'We are over halfway to our goal!');
 
--- Shares (Matches your specific campaign_share columns: campaign_id, share_id, platform)
+-- Shares
 INSERT INTO campaign_share (campaign_id, share_id, platform)
 VALUES 
 (1, 1, 'Twitter'), 
