@@ -66,7 +66,7 @@ create table Payment_Methods(
     payment_token VARCHAR(100) NOT NULL,
     method_type VARCHAR(50) NOT NULL,
     user_id INT,
-    CONSTRAINT fk_paymentMethods_to_users FOREIGN KEY (user_id) REFERENCES users(user_id)
+    CONSTRAINT fk_paymentMethods_to_users FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE -- Remove all payment methods from user account when user is deleted
 );
 
 -- Donations
@@ -77,7 +77,8 @@ create table Donations(
     donated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- donation time
     payment_status VARCHAR(20) DEFAULT 'pending' CHECK (payment_status IN ('pending', 'completed', 'failed', 'refunded')),
     campaign_id INT,
-    CONSTRAINT fk_donations_to_campaignID FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id)
+    CONSTRAINT fk_donations_to_campaignID FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id) -- ON DELETE RESTRICT 
+    
 );
 
 -- -- Pays relationship
@@ -87,16 +88,18 @@ create table Donations(
 --     campaign_id INT,
 --     user_id INT,
 --     CONSTRAINT fk_paysTo_to_paymentMethodID FOREIGN KEY (payment_method_id) REFERENCES Payment_Methods(payment_method_id),  -- now reuses user_id in Payment_methods table instead
---     CONSTRAINT fk_paysTo_to_campaignID FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id),                         -- see line 78
+--     CONSTRAINT fk_paysTo_to_campaignID FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id),                         -- see line 80
 --     CONSTRAINT fk_paysTo_to_donationID FOREIGN KEY (donation_id) REFERENCES donations(donation_id),                         -- see user_donations table
 --     CONSTRAINT fk_paysTo_to_userID FOREIGN KEY (user_id) REFERENCES users(user_id)                                          -- see user_donations table
 -- );
 
 create table user_donations(
     donation_id INT PRIMARY KEY,
-    user_id INT NOT NULL, -- NEEDS CHECK FOR EXISTING USER      -- No reference key, keeps donation instance while able to delete a user
-    payment_token VARCHAR(100) NOT NULL, -- NEEDS CHECK FOR EXISTING PAYMENT_TOKEN         -- No reference key, keeps donation instance while able to delete payment method
-    CONSTRAINT fk_userDonation_to_donationID FOREIGN KEY (donation_id) REFERENCES donations(donation_id)
+    user_id INT NOT NULL, 
+    payment_token VARCHAR(100) NOT NULL,
+    CONSTRAINT fk_userDonation_to_donationID FOREIGN KEY (donation_id) REFERENCES donations(donation_id) -- ON DELETE RESTRICT,
+    CONSTRAINT fk_userDonation_to_userID FOREIGN KEY (user_id) REFERENCES user_id(user_id) ON DELETE SET NULL, -- prevents restriction on user deletion
+    CONSTRAINT fk_userDonation_to_paymentToken FOREIGN KEY (PAYMENT_METHODS) REFERENCES (payment_token) ON DELETE SET NULL -- prevents restriction on payment_method deletion
 
 );
 
@@ -256,8 +259,3 @@ VALUES
 -- values (1, 1, 1, 2);
 
 -- select * from pays_to;
-
--- select (first_name || ' ' || last_name) as Name, donations.amount, method_type, campaigns.title 
--- from campaigns, donations, payment_methods, users, pays_to
--- where pays_to.donation_id = donations.donation_id and pays_to.payment_method_ID = payment_methods.payment_method_id
---     and pays_to.campaign_id = campaigns.campaign_id and pays_to.user_id = users.user_id;
