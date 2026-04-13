@@ -292,7 +292,6 @@ def create_app(test_config=None):
             elif case == 'delete_with_deps':
                 db_conn.execute("INSERT OR IGNORE INTO users (user_id, first_name, last_name, email, password_hash, role) VALUES (777, 'Dep', 'User', 'dep@test.com', 'hash', 'user')")
                 db_conn.execute("INSERT OR IGNORE INTO campaigns (organizer_id, title, description, funding_goal, end_date) VALUES (777, 'Dep Campaign', 'Test', 100, '2027-01-01')")
-                db_conn.commit()
                 db_conn.execute("DELETE FROM users WHERE user_id = 777")
                 db_conn.commit()
 
