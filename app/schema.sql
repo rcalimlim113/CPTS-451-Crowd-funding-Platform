@@ -2,7 +2,7 @@
 DROP TABLE IF EXISTS campaign_updates;
 DROP TABLE IF EXISTS campaign_share;
 --DROP TABLE IF EXISTS Pays_to;
-DROP TABLE IF EXISTS user_donation;
+DROP TABLE IF EXISTS user_donations;
 DROP TABLE IF EXISTS PAYMENT_METHODS;
 DROP TABLE IF EXISTS Donations;
 DROP TABLE IF EXISTS campaigns;
@@ -92,7 +92,7 @@ create table Donations(
 --     CONSTRAINT fk_paysTo_to_userID FOREIGN KEY (user_id) REFERENCES users(user_id)                                          -- see user_donation table
 -- );
 
-create table user_donation(
+create table user_donations(
     donation_id INT PRIMARY KEY,
     user_id INT,
     payment_token VARCHAR(100) NOT NULL, -- NEEDS CHECK FOR EXISTING PAYMENT_TOKEN         -- No reference key, keeps donation while able to delete payment method
@@ -130,7 +130,7 @@ VALUES
 
 -- Pays Relationship (Links everything together)
 -- (donation_id, payment_method_id, campaign_id, user_id)
-INSERT INTO pays_to (donation_id, payment_method_id, campaign_id, user_id)
+INSERT INTO user_donation (donation_id, payment_method_id, campaign_id, user_id)
 VALUES 
 (1, 1, 1, 2),
 (2, 2, 2, 3);
