@@ -217,6 +217,7 @@ async function insertCampaign() {
 async function insertDonation() {
   const d = await post('/api/donations', {
     donation_id: document.getElementById('d-id').value, 
+    campaign_id: document.getElementById('d-ci').value,
     amount: document.getElementById('d-am').value,
     payment_status: document.getElementById('d-ps').value,
     message: document.getElementById('d-ms').value // GRAB MESSAGE VALUE

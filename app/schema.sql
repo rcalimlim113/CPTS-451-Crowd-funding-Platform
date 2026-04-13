@@ -75,7 +75,7 @@ create table Donations(
     amount DECIMAL(10,2) NOT NULL CHECK (amount > 0),
     donated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- donation time
     payment_status VARCHAR(20) DEFAULT 'pending' CHECK (payment_status IN ('pending', 'completed', 'failed', 'refunded')),
-    campaign_id INT,
+    campaign_id INT NOT NULL,
     CONSTRAINT fk_donations_to_campaignID FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id) -- ON DELETE RESTRICT 
     
 );

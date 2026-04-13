@@ -158,7 +158,7 @@ def create_app(test_config=None):
         QUERIES = {
             # --- BASIC CRUD ---
             'b1': ("New User Account", "INSERT INTO users (user_id, first_name, last_name, email, password_hash, role, is_active) VALUES (999, 'Test', 'User', 'test@test.edu', 'pw123', 'user', 1)", "A new user is stored.", "", ""),
-            'b2': ("New Donation Record", "INSERT INTO donations (donation_id, amount, payment_status, message) VALUES (999, 25.00, 'completed', 'Test Donation')", "A donation is added.", "", ""),
+            'b2': ("New Donation Record", "INSERT INTO donations (donation_id, campaign_id, amount, payment_status, message) VALUES (999, 1, 25.00, 'completed', 'Test Donation')", "A donation is added.", "", ""),
             'b3': ("New Payment Method", "INSERT INTO payment_methods (payment_method_id, user_id, payment_token, method_type) VALUES (999, 1, 'tok_test', 'credit_card')", "A new payment method is linked.", "", ""),
             'b4': ("Update Goal Date", "UPDATE campaigns SET end_date = '2027-01-01' WHERE campaign_id = 1", "Extending the deadline.", "", ""),
             'b5': ("Complete Campaign", "UPDATE campaigns SET status = 'completed' WHERE campaign_id = 1", "Marking as finished.", "", ""),
