@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Query Explorer</title>
+</head>
+<body>
+<nav>
+  <a href="/">Campaigns</a>
+  <a href="/crud">CRUD Manager</a>
+  <a href="/queries">Queries</a>
+  <a href="/edge-cases">Edge Cases</a>
+  <a href="/business-rules">Business Rules</a>
+</nav>
+
+<h1>Query Explorer</h1>
+
+<h3>Basic CRUD Actions (12 Queries)</h3>
+<div>
+  <strong>Insert:</strong>
+  <button onclick="runQuery('b1')">Add Test User</button>
+  <button onclick="runQuery('b2')">Add Test Donation</button>
+  <button onclick="runQuery('b3')">Add Test Payment</button>
+  <br>
+  <strong>Update:</strong>
+  <button onclick="runQuery('b4')">Update Goal Date</button>
+  <button onclick="runQuery('b5')">Complete Campaign</button>
+  <button onclick="runQuery('b6')">Deactivate Test User</button>
+  <br>
+  <strong>Delete:</strong>
+  <button onclick="runQuery('b7')">Remove Test User</button>
+  <button onclick="runQuery('b8')">Remove Test Donation</button>
+  <button onclick="runQuery('b9')">Remove Test Payment</button>
+  <br>
+  <strong>Select:</strong>
+  <button onclick="runQuery('b10')">Active Campaigns</button>
+  <button onclick="runQuery('b11')">User Audit</button>
+  <button onclick="runQuery('b12')">Donation Ledger</button>
+</div>
+
+<h3>Advanced Retrieval (10 Queries)</h3>
+<div>
+  <button onclick="runQuery(1)">#1 User Donation Hist</button>
+  <button onclick="runQuery(2)">#2 Org Directory</button>
+  <button onclick="runQuery(3)">#3 Campaign Ledger</button>
+  <button onclick="runQuery(4)">#4 Update Feed</button>
+  <button onclick="runQuery(5)">#5 Card Audit</button>
+  <button onclick="runQuery(6)">#6 Public Feed</button>
+  <button onclick="runQuery(7)">#7 Org Contact</button>
+  <button onclick="runQuery(8)">#8 Platform Reach</button>
+  <button onclick="runQuery(9)">#9 Total Funds</button>
+  <button onclick="runQuery(10)">#10 Message Digest</button>
+</div>
+
+<hr>
+
+<div id="result-panel" style="display:none">
+  <h2 id="r-label"></h2>
+  <p><strong>Scenario:</strong> <span id="r-scenario"></span></p>
+  
+  <div id="logic-box" style="background: #fdf6e3; padding: 10px; border: 1px solid #eee;">
+    <strong>Analysis:</strong>
+    <div id="r-why"></div>
+  </div>
+
+  <h4>SQL Code:</h4>
+  <pre id="r-sql"></pre>
+
+  <h4>Database Output:</h4>
+  <p id="r-count"></p>
+  <table>
+    <thead id="r-thead"></thead>
+    <tbody id="r-tbody"></tbody>
+  </table>
+</div>
+
+<script>
+async function runQuery(id) {
+  const r = await fetch('/api/query/' + id);
+  const data = await r.json();
+  
+  document.getElementById('result-panel').style.display = 'block';
+  document.getElementById('r-label').textContent = data.label;
+  document.getElementById('r-scenario').textContent = data.scenario || "Standard system operation.";
+  document.getElementById('r-sql').textContent = data.sql;
+  document.getElementById('r-count').textContent = data.rows ? data.rows.length + " rows" : "Action executed.";
+
+  // Handle Logic Display
+  let logic = "";
+  if (id.toString().startsWith('b')) {
+    logic = "Basic CRUD operation demonstrating data persistence.";
+  } else {
+    logic = `<strong>Join:</strong> ${data.why_join || ""}`;
+  }
+  document.getElementById('r-why').innerHTML = logic;
+
+  // Handle Table
+  const thead = document.getElementById('r-thead');
+  const tbody = document.getElementById('r-tbody');
+  thead.innerHTML = ""; tbody.innerHTML = "";
+
+  if (data.rows && data.rows.length > 0) {
+    const cols = Object.keys(data.rows[0]);
+    thead.innerHTML = '<tr>' + cols.map(c => `<th>${c}</th>`).join('') + '</tr>';
+    tbody.innerHTML = data.rows.map(row => 
+      '<tr>' + cols.map(c => `<td>${row[c] ?? '—'}</td>`).join('') + '</tr>'
+    ).join('');
+  } else {
+    tbody.innerHTML = '<tr><td>Success: Query executed (no rows to display).</td></tr>';
+  }
+}
+</script>
+</body>
+</html>

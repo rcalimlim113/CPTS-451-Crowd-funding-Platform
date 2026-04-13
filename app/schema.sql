@@ -89,6 +89,50 @@ create table pays_to(
     CONSTRAINT fk_paysTo_to_userID FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+-- --- SEED DATA ---
+
+-- Users
+INSERT INTO users (user_id, first_name, last_name, email, password_hash, role, phone_number, is_active)
+VALUES 
+(1, 'Admin', 'Admin', 'admin@admin.com', 'hash123', 'admin', '509-555-0100', 1),
+(2, 'John', 'Smith', 'johnS@gmail.com', 'password1234', 'user', '123-456-7890', 1),
+(3, 'Jane', 'Doe', 'jane.doe@example.com', 'securepass', 'user', '509-555-9999', 1);
+
+-- Campaigns (Matches your NOT NULL requirements)
+INSERT INTO campaigns (campaign_id, organizer_id, title, description, funding_goal, start_date, end_date, status, is_approved)
+VALUES 
+(1, 1, 'Pullman Park Clean-up', 'Community effort to clean local trails.', 1000.00, '2026-04-01', '2026-07-01', 'active', 1),
+(2, 2, 'Student Tech Fund', 'Raising money for laptops.', 5000.00, '2026-04-10', '2026-12-31', 'active', 1);
+
+-- Payment Methods
+INSERT INTO payment_methods (payment_method_id, user_id, payment_token, method_type)
+VALUES 
+(1, 2, 'tok_visa_111', 'VISA'),
+(2, 3, 'tok_paypal_222', 'PayPal');
+
+-- Donations (Matches your column order: id, message, amount, time, status)
+INSERT INTO donations (donation_id, message, amount, donated_at, payment_status)
+VALUES 
+(1, 'Keep up the good work!', 600.00, '2026-04-11 10:00:00', 'completed'),
+(2, 'Happy to help.', 50.13, '2026-04-12 14:30:00', 'completed');
+
+-- Pays Relationship (Links everything together)
+-- (donation_id, payment_method_id, campaign_id, user_id)
+INSERT INTO pays_to (donation_id, payment_method_id, campaign_id, user_id)
+VALUES 
+(1, 1, 1, 2),
+(2, 2, 2, 3);
+
+-- Updates
+INSERT INTO campaign_updates (campaign_id, update_id, title, content)
+VALUES (1, 1, 'Almost there!', 'We are over halfway to our goal!');
+
+-- Shares (Matches your specific campaign_share columns: campaign_id, share_id, platform)
+INSERT INTO campaign_share (campaign_id, share_id, platform)
+VALUES 
+(1, 1, 'Twitter'), 
+(1, 2, 'Facebook');
+
 
 -- -- VIEWS
 

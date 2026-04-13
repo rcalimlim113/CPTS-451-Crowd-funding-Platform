@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CRUD Manager</title>
+</head>
+<body>
+<nav>
+  <a href="/">Campaigns</a>
+  <a href="/crud">CRUD Manager</a>
+  <a href="/queries">Queries</a>
+  <a href="/edge-cases">Edge Cases</a>
+  <a href="/business-rules">Business Rules</a>
+</nav>
+
+<div>
+  <h1>CRUD Manager</h1>
+  <p>Insert, update, and delete records. Constraint violations are caught and displayed inline.</p>
+
+  <div>
+    <button onclick="switchTab('users',this)">Users</button>
+    <button onclick="switchTab('campaigns',this)">Campaigns</button>
+    <button onclick="switchTab('donations',this)">Donations</button>
+    <button onclick="switchTab('payment_methods',this)">Payment Methods</button>
+  </div>
+
+  <!-- Users -->
+  <div id="p-users" style="display:block">
+    <div>
+      <h3>Add User</h3>
+      <div>
+        <label>First Name *</label><input id="u-fn">
+        <label>Last Name *</label><input id="u-ln">
+        <label>Email *</label><input id="u-em" type="email">
+        <label>Password Hash *</label><input id="u-pw">
+        <label>Role *</label>
+        <select id="u-ro"><option value="user">user</option><option value="admin">admin</option></select>
+        <label>Phone</label><input id="u-ph">
+      </div>
+      <button onclick="insertUser()">Insert User</button>
+      <div id="u-msg"></div>
+    </div>
+    <div>
+      <h3>Users Table </h3>
+      <table border="1" id="tbl-users">
+        <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Phone</th><th>Active</th><th></th></tr></thead>
+        <tbody id="t-users"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Campaigns -->
+  <div id="p-campaigns" style="display:none">
+    <div>
+      <h3>Add Campaign</h3>
+      <label>Organizer ID *</label><input id="c-oi" type="number">
+      <label>Title *</label><input id="c-ti">
+      <label>Description *</label><textarea id="c-de"></textarea>
+      <label>Goal *</label><input id="c-fg" type="number" step="0.01">
+      <label>Status</label>
+      <select id="c-st"><option value="pending">pending</option><option value="active">active</option></select>
+      <label>Start Date *</label><input id="c-sd" type="date">
+      <label>End Date *</label><input id="c-ed" type="date">
+      <button onclick="insertCampaign()">Insert Campaign</button>
+      <div id="c-msg"></div>
+    </div>
+    <div>
+      <h3>Campaigns Table</h3>
+      <table border="1" id="tbl-campaigns">
+        <thead><tr><th>ID</th><th>Title</th><th>Org ID</th><th>Goal</th><th>Status</th><th>End Date</th><th></th></tr></thead>
+        <tbody id="t-campaigns"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Donations -->
+  <div id="p-donations" style="display:none">
+    <div>
+      <h3>Add Donation</h3>
+      <label>ID *</label><input id="d-id" type="number">
+      <label>Amount *</label><input id="d-am" type="number" step="0.01">
+      <label>Status</label>
+      <select id="d-ps">
+        <option value="pending">pending</option>
+        <option value="completed">completed</option>
+        <option value="failed">failed</option>
+        <option value="refunded">refunded</option>
+      </select>
+      <label>Message</label><input id="d-ms"> 
+      <button onclick="insertDonation()">Insert Donation</button>
+      <div id="d-msg"></div>
+    </div>
+    <div>
+      <h3>Donations Table</h3>
+      <table border="1" id="tbl-donations">
+        <thead><tr><th>ID</th><th>Amount</th><th>Status</th><th>Message</th><th>Date</th><th></th></tr></thead>
+        <tbody id="t-donations"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Payment Methods -->
+  <div id="p-payment_methods" style="display:none">
+    <div>
+      <h3>Add Payment Method</h3>
+      <label>ID *</label><input id="pm-id" type="number">
+      <label>User ID *</label><input id="pm-ui" type="number">
+      <label>Token *</label><input id="pm-tk">
+      <label>Type *</label><input id="pm-ty"> <button onclick="insertPM()">Insert PM</button>
+      <div id="pm-msg"></div>
+    </div>
+    <h3>Payment Methods Table</h3>
+    <table border="1" id="tbl-payment_methods">
+      <thead><tr><th>ID</th><th>User ID</th><th>Token</th><th>Type</th><th></th></tr></thead>
+      <tbody id="t-payment_methods"></tbody>
+    </table>
+  </div>
+
+<script>
+function switchTab(name, btn) {
+  ['users','campaigns','donations','payment_methods'].forEach(n => {
+    document.getElementById('p-' + n).style.display = (n === name) ? 'block' : 'none';
+  });
+  load(name);
+}
+
+function showMsg(id, data) {
+  const el = document.getElementById(id);
+  el.textContent = (data.status === 'success' ? '✓ ' : '✗ ') + data.message;
+  setTimeout(() => el.textContent = '', 5000);
+}
+
+async function post(url, body) {
+  const r = await fetch(url, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  return r.json();
+}
+
+async function load(table) {
+  const r = await fetch('/api/crud/' + table);
+  const rows = await r.json();
+  const tbody = document.getElementById('t-' + table);
+  if (rows.error || !rows.length) { tbody.innerHTML = '<tr><td>No records</td></tr>'; return; }
+
+const renders = {
+    users: r => {
+      const escape = (str) => (str || "").replace(/'/g, "\\'");
+      return `
+      <td>${r.user_id}</td><td>${r.first_name} ${r.last_name}</td><td>${r.email}</td><td>${r.role}</td><td>${r.phone_number||'—'}</td><td>${r.is_active?'yes':'no'}</td>
+      <td>
+        <button onclick="editRecord('users', ${r.user_id}, {first_name: '${escape(r.first_name)}', last_name: '${escape(r.last_name)}', email: '${escape(r.email)}', role: '${r.role}', phone_number: '${escape(r.phone_number)}'})">Edit</button>
+        <button onclick="del('users','user_id',${r.user_id})">Delete</button>
+      </td>`;
+    },
+
+    campaigns: r => {
+      const escape = (str) => (str || "").replace(/'/g, "\\'");
+      const cleanDesc = escape(r.description).replace(/[\n\r]/g, " ");
+      return `
+        <td>${r.campaign_id}</td><td>${r.title}</td><td>${r.organizer_id}</td>
+        <td>$${parseFloat(r.funding_goal).toFixed(2)}</td><td>${r.status}</td><td>${r.end_date}</td>
+        <td>
+          <button onclick="editRecord('campaigns', ${r.campaign_id}, {title: '${escape(r.title)}', description: '${cleanDesc}', funding_goal: ${r.funding_goal}, status: '${r.status}', end_date: '${r.end_date}'})">Edit</button>
+          <button onclick="del('campaigns','campaign_id',${r.campaign_id})">Delete</button>
+        </td>`;
+    },
+
+    donations: r => {
+      const escape = (str) => (str || "").replace(/'/g, "\\'");
+      return `
+        <td>${r.donation_id}</td><td>$${parseFloat(r.amount).toFixed(2)}</td><td>${r.payment_status}</td><td>${r.message||'—'}</td><td>${r.donated_at||'—'}</td>
+        <td>
+          <button onclick="editRecord('donations', ${r.donation_id}, {amount: ${r.amount}, payment_status: '${r.payment_status}', message: '${escape(r.message)}'})">Edit</button>
+          <button onclick="del('donations','donation_id',${r.donation_id})">Delete</button>
+        </td>`;
+    },
+
+    payment_methods: r => {
+      const escape = (str) => (str || "").replace(/'/g, "\\'");
+      return `
+      <td>${r.payment_method_id}</td><td>${r.user_id}</td><td>${r.payment_token}</td><td>${r.method_type}</td>
+      <td>
+        <button onclick="editRecord('payment_methods', ${r.payment_method_id}, {payment_token: '${escape(r.payment_token)}', method_type: '${r.method_type}'})">Edit</button>
+        <button onclick="del('payment_methods','payment_method_id',${r.payment_method_id})">Delete</button>
+      </td>`;
+    } 
+  };
+  tbody.innerHTML = rows.map(r => `<tr>${renders[table](r)}</tr>`).join('');
+}
+
+async function del(table, pkCol, pk) {
+  if (!confirm(`Delete ${table} #${pk}?`)) return;
+  const r = await fetch(`/api/delete/${table}/${pk}`, { method: 'DELETE' });
+  const data = await r.json();
+  if (data.status === 'success') load(table); else alert('Error: ' + data.message);
+}
+
+async function insertUser() {
+  const d = await post('/api/users', {
+    first_name: document.getElementById('u-fn').value, last_name: document.getElementById('u-ln').value,
+    email: document.getElementById('u-em').value, password_hash: document.getElementById('u-pw').value,
+    role: document.getElementById('u-ro').value, phone_number: document.getElementById('u-ph').value
+  });
+  showMsg('u-msg', d); if (d.status === 'success') load('users');
+}
+
+async function insertCampaign() {
+  const d = await post('/api/campaigns', {
+    organizer_id: document.getElementById('c-oi').value, title: document.getElementById('c-ti').value,
+    description: document.getElementById('c-de').value, funding_goal: document.getElementById('c-fg').value,
+    status: document.getElementById('c-st').value, start_date: document.getElementById('c-sd').value, end_date: document.getElementById('c-ed').value
+  });
+  showMsg('c-msg', d); if (d.status === 'success') load('campaigns');
+}
+
+async function insertDonation() {
+  const d = await post('/api/donations', {
+    donation_id: document.getElementById('d-id').value, 
+    amount: document.getElementById('d-am').value,
+    payment_status: document.getElementById('d-ps').value,
+    message: document.getElementById('d-ms').value // GRAB MESSAGE VALUE
+  });
+  showMsg('d-msg', d); 
+  if (d.status === 'success') load('donations');
+}
+
+async function insertPM() {
+  const d = await post('/api/payment_methods', {
+    payment_method_id: document.getElementById('pm-id').value,
+    user_id: document.getElementById('pm-ui').value,
+    payment_token: document.getElementById('pm-tk').value,
+    method_type: document.getElementById('pm-ty').value
+  });
+  showMsg('pm-msg', d); 
+  if (d.status === 'success') load('payment_methods');
+}
+
+async function editRecord(table, id, currentData) {
+    const fields = Object.keys(currentData).join(', ');
+    const field = prompt(`Which field would you like to update? (${fields})`);
+    
+    if (!field || !currentData.hasOwnProperty(field)) {
+        if (field) alert("Invalid field name.");
+        return;
+    }
+
+    const newValue = prompt(`Enter new value for ${field}:`, currentData[field]);
+    
+    if (newValue !== null) {
+        const body = {};
+        body[field] = newValue;
+
+        const d = await post(`/api/update/${table}/${id}`, body);
+        alert(d.message);
+        load(table);
+    }
+}
+
+
+load('users');
+</script>
+</body>
+</html>

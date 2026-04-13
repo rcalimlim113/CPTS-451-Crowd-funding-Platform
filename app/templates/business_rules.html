@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Business Rules</title>
+</head>
+<body>
+<nav>
+  <a href="/">Campaigns</a>
+  <a href="/crud">CRUD Manager</a>
+  <a href="/queries">Queries</a>
+  <a href="/edge-cases">Edge Cases</a>
+  <a href="/business-rules">Business Rules</a>
+</nav>
+
+<div>
+  <h1>Business Rules</h1>
+  <p>Enforced database constraints and schema implementation.</p>
+
+  <table border="1">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Business Rule</th>
+        <th>SQL Enforcement</th>
+        <th>Constraint Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>01</td>
+        <td>Unique emails for all users</td>
+        <td>UNIQUE(email)</td>
+        <td>UNIQUE</td>
+      </tr>
+      <tr>
+        <td>02</td>
+        <td>Role must be 'admin' or 'user'</td>
+        <td>CHECK (role IN ('admin', 'user'))</td>
+        <td>CHECK</td>
+      </tr>
+      <tr>
+        <td>03</td>
+        <td>Funding goal must be > 0</td>
+        <td>CHECK (funding_goal > 0)</td>
+        <td>CHECK</td>
+      </tr>
+      <tr>
+        <td>04</td>
+        <td>End date must be after start date</td>
+        <td>CHECK (end_date > start_date)</td>
+        <td>CHECK</td>
+      </tr>
+      <tr>
+        <td>05</td>
+        <td>Donation amount must be > 0</td>
+        <td>CHECK (amount > 0)</td>
+        <td>CHECK</td>
+      </tr>
+      <tr>
+        <td>06</td>
+        <td>Campaign must have a valid organizer</td>
+        <td>FK organizer_id → users(user_id)</td>
+        <td>FOREIGN KEY</td>
+      </tr>
+      <tr>
+        <td>07</td>
+        <td>Donation payment status must be recognized</td>
+        <td>CHECK (payment_status IN ('pending','completed','failed','refunded'))</td>
+        <td>CHECK</td>
+      </tr>
+      <tr>
+        <td>08</td>
+        <td>Campaign status must be a valid value</td>
+        <td>CHECK (status IN ('pending','active','completed','cancelled'))</td>
+        <td>CHECK</td>
+      </tr>
+      <tr>
+        <td>09</td>
+        <td>User core fields cannot be null</td>
+        <td>NOT NULL on first_name, last_name, email, password_hash, role</td>
+        <td>NOT NULL</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td>pays_to references must all be valid</td>
+        <td>4x FK constraints on pays_to table</td><td>FK x 4</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <p><a href="/edge-cases">Test these rules live in Edge Cases</a></p>
+</div>
+</body>
+</html>

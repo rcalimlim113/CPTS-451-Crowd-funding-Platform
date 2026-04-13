@@ -1,78 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Campaigns</title>
+    <meta charset="UTF-8">
+    <title>Campaigns</title>
 </head>
 <body>
 <nav>
-  <a href="/" class="active">Campaigns</a>
-  <a href="/crud">CRUD Manager</a>
-  <a href="/queries">Queries</a>
-  <a href="/edge-cases">Edge Cases</a>
-  <a href="/business-rules">Business Rules</a>
+    <a href="/">Campaigns</a>
+    <a href="/crud">CRUD Manager</a>
+    <a href="/queries">Queries</a>
+    <a href="/edge-cases">Edge Cases</a>
+    <a href="/business-rules">Business Rules</a>
 </nav>
 
-<div class="page">
-  <h1>Campaigns</h1>
-  <p class="sub">All campaigns joined with organizer info from the Users table.</p>
+<div>
+    <h1>Campaigns</h1>
+    <p>All campaigns joined with organizer info from the Users table.</p>
 
-  <div class="toolbar">
-    <select id="sf" onchange="filter()">
-      <option value="">All statuses</option>
-      <option value="active">Active</option>
-      <option value="pending">Pending</option>
-      <option value="completed">Completed</option>
-      <option value="cancelled">Cancelled</option>
-    </select>
-    <input type="text" id="sq" placeholder="Search title or organizer…" oninput="filter()" style="width:220px">
-    <span class="count" id="cnt"></span>
-    <a href="/crud" class="btn">+ Add Campaign</a>
-  </div>
+    <div>
+        <select id="sf" onchange="filter()">
+            <option value="">All statuses</option>
+            <option value="active">Active</option>
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+        </select>
+        <input type="text" id="sq" placeholder="Search title or organizer…" oninput="filter()" style="width:220px">
+        <span id="cnt"></span>
+        <a href="/crud">+ Add Campaign</a>
+    </div>
 
-  <table id="tbl">
-    <thead><tr>
-      <th>ID</th><th>Title</th><th>Organizer</th><th>Goal</th>
-      <th>Start</th><th>End</th><th>Status</th><th>Approved</th>
-    </tr></thead>
-    <tbody>
-    {% for c in campaigns %}
-    <tr data-s="{{ c['status'] }}" data-q="{{ (c['title'] ~ ' ' ~ c['organizer_name'])|lower }}">
-      <td class="mono">{{ c['campaign_id'] }}</td>
-      <td><strong>{{ c['title'] }}</strong></td>
-      <td>{{ c['organizer_name'] }}</td>
-      <td class="mono">${{ '{:,.2f}'.format(c['funding_goal']) }}</td>
-      <td class="mono">{{ c['start_date'] }}</td>
-      <td class="mono">{{ c['end_date'] }}</td>
-      <td>
-        {% if c['status'] == 'active' %}<span class="badge green">active</span>
-        {% elif c['status'] == 'pending' %}<span class="badge yellow">pending</span>
-        {% elif c['status'] == 'completed' %}<span class="badge gray">completed</span>
-        {% else %}<span class="badge red">{{ c['status'] }}</span>{% endif %}
-      </td>
-      <td>
-        {% if c['is_approved'] %}<span class="badge green">✓ yes</span>
-        {% else %}<span class="badge gray">no</span>{% endif %}
-      </td>
-    </tr>
-    {% else %}
-    <tr><td colspan="8" style="text-align:center;color:#bbb;padding:40px">No campaigns yet. Add one via CRUD Manager.</td></tr>
-    {% endfor %}
-    </tbody>
-  </table>
+    <table id="tbl" border="1"> <thead>
+            <tr>
+                <th>ID</th><th>Title</th><th>Organizer</th><th>Goal</th>
+                <th>Start</th><th>End</th><th>Status</th><th>Approved</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for c in campaigns %}
+            <tr data-s="{{ c['status'] }}" data-q="{{ (c['title'] ~ ' ' ~ c['organizer_name'])|lower }}">
+                <td>{{ c['campaign_id'] }}</td>
+                <td>{{ c['title'] }}</td>
+                <td>{{ c['organizer_name'] }}</td>
+                <td>${{ '{:,.2f}'.format(c['funding_goal']) }}</td>
+                <td>{{ c['start_date'] }}</td>
+                <td>{{ c['end_date'] }}</td>
+                <td>{{ c['status'] }}</td>
+                <td>{{ 'yes' if c['is_approved'] else 'no' }}</td>
+            </tr>
+        {% else %}
+            <tr><td colspan="8">No campaigns yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 <script>
 function filter() {
-  const s = document.getElementById('sf').value;
-  const q = document.getElementById('sq').value.toLowerCase();
-  let n = 0;
-  document.querySelectorAll('#tbl tbody tr[data-s]').forEach(r => {
-    const ok = (!s || r.dataset.s === s) && (!q || r.dataset.q.includes(q));
-    r.style.display = ok ? '' : 'none';
-    if (ok) n++;
-  });
-  document.getElementById('cnt').textContent = n + ' shown';
+    const s = document.getElementById('sf').value;
+    const q = document.getElementById('sq').value.toLowerCase();
+    let n = 0;
+    document.querySelectorAll('#tbl tbody tr[data-s]').forEach(r => {
+        const ok = (!s || r.dataset.s === s) && (!q || r.dataset.q.includes(q));
+        r.style.display = ok ? '' : 'none';
+        if (ok) n++;
+    });
+    document.getElementById('cnt').textContent = n + ' shown';
 }
 filter();
 </script>

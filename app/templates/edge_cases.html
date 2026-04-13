@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Edge Cases</title>
+</head>
+<body>
+<nav>
+  <a href="/">Campaigns</a>
+  <a href="/crud">CRUD Manager</a>
+  <a href="/queries">Queries</a>
+  <a href="/edge-cases">Edge Cases</a>
+  <a href="/business-rules">Business Rules</a>
+</nav>
+
+<div>
+  <h1>Edge Case Tester</h1>
+  <p>Attempts invalid database operations to verify constraints.</p>
+
+  <div>
+    <button onclick="runAll()">▶ Run All Cases</button>
+    <button onclick="resetAll()">Reset</button>
+    <p>
+      Handled: <span id="cnt-ok">0</span> | 
+      Not Caught: <span id="cnt-fail">0</span>
+    </p>
+  </div>
+
+  <div id="cases-list">
+    <div id="case-duplicate_email" style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
+      <strong>Duplicate Email Insert</strong>
+      <p>Action: UNIQUE constraint on users.email</p>
+      <button onclick="runCase('duplicate_email')">Test Case</button>
+      <div id="res-duplicate_email"></div>
+    </div>
+
+    <div id="case-invalid_role" style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
+      <strong>Invalid Role Value</strong>
+      <p>Action: CHECK (role IN ('admin','user'))</p>
+      <button onclick="runCase('invalid_role')">Test Case</button>
+      <div id="res-invalid_role"></div>
+    </div>
+
+    <div id="case-negative_donation" style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
+      <strong>Negative Donation Amount</strong>
+      <p>Action: CHECK (amount > 0)</p>
+      <button onclick="runCase('negative_donation')">Test Case</button>
+      <div id="res-negative_donation"></div>
+    </div>
+
+    <div id="case-bad_date" style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
+      <strong>End Date Before Start Date</strong>
+      <p>Action: CHECK (end_date > start_date)</p>
+      <button onclick="runCase('bad_date')">Test Case</button>
+      <div id="res-bad_date"></div>
+    </div>
+
+    <div id="case-orphan_campaign" style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
+      <strong>FK Violation — Invalid Organizer</strong>
+      <p>Action: FK organizer_id → users(user_id) with organizer_id = 99999</p>
+      <button onclick="runCase('orphan_campaign')">Test Case</button>
+      <div id="res-orphan_campaign"></div>
+    </div>
+
+    <div id="case-delete_with_deps" style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
+      <strong>Delete Record With Dependents</strong>
+      <p>Action: DELETE user who has campaigns referencing them</p>
+      <button onclick="runCase('delete_with_deps')">Test Case</button>
+      <div id="res-delete_with_deps"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+async function runCase(name) {
+  const res = document.getElementById('res-' + name);
+  res.textContent = 'Running...';
+
+  const r = await fetch('/api/edge/' + name, { method: 'POST' });
+  const data = await r.json();
+  const ok = data.status === 'HANDLED';
+
+  res.innerHTML = `
+    <strong>${ok ? '✓ HANDLED' : '✗ NOT CAUGHT'}</strong><br>
+    <code>${data.error || data.note || '—'}</code><br>
+    <small>${data.explanation || ''}</small>`;
+  
+  res.parentElement.style.background = ok ? '#e6f4ea' : '#fdecea';
+  updateCounts();
+}
+
+function updateCounts() {
+  // Logic to count results based on text content
+  let ok = 0, fail = 0;
+  document.querySelectorAll('[id^="res-"]').forEach(el => {
+    if (el.textContent.includes('✓')) ok++;
+    if (el.textContent.includes('✗')) fail++;
+  });
+  document.getElementById('cnt-ok').textContent = ok;
+  document.getElementById('cnt-fail').textContent = fail;
+}
+
+async function runAll() {
+  const cases = ['duplicate_email','invalid_role','negative_donation','bad_date','orphan_campaign','delete_with_deps'];
+  for (const c of cases) { await runCase(c); }
+}
+
+function resetAll() {
+  location.reload();
+}
+</script>
+</body>
+</html>
