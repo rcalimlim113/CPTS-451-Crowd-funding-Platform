@@ -274,8 +274,8 @@ def create_app(test_config=None):
                 db_conn.commit()
 
             elif case == 'negative_donation':
-                db_conn.execute("""INSERT INTO donations (donation_id, amount, payment_status)
-                                VALUES (9999, -50.00, 'pending')""")
+                db_conn.execute("""INSERT INTO donations (donation_id, campaign_id, amount, payment_status)
+                                VALUES (9999, 1, -50.00, 'pending')""")
                 db_conn.commit()
 
             elif case == 'bad_date':
