@@ -95,12 +95,10 @@ create table Donations(
 
 create table user_donations(
     donation_id INT PRIMARY KEY,
-    user_id INT NOT NULL, 
-    payment_token VARCHAR(100) NOT NULL,
-    CONSTRAINT fk_userDonation_to_donationID FOREIGN KEY (donation_id) REFERENCES donations(donation_id) -- ON DELETE RESTRICT,
-    CONSTRAINT fk_userDonation_to_userID FOREIGN KEY (user_id) REFERENCES user_id(user_id) ON DELETE SET NULL, -- prevents restriction on user deletion
-    CONSTRAINT fk_userDonation_to_paymentToken FOREIGN KEY (PAYMENT_METHODS) REFERENCES (payment_token) ON DELETE SET NULL -- prevents restriction on payment_method deletion
-
+    user_id INT, 
+    payment_token VARCHAR(100),
+    CONSTRAINT fk_userDonation_to_donationID FOREIGN KEY (donation_id) REFERENCES donations(donation_id), -- ON DELETE RESTRICT
+    CONSTRAINT fk_userDonation_to_userID FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE SET NULL -- prevents restriction on user deletion
 );
 
 -- --- SEED DATA ---
