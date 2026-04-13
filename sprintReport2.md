@@ -52,7 +52,7 @@ Display all the active campaigns.
 
 ## Code Files for Review
 Please review the following code files, which were actively developed during this sprint, for quality:
- * [schema.sql](https://github.com/rcalimlim113/CPTS-451-Crowd-funding-Platform/blob/main/app/__init__.py)
+ * [schema.sql](https://github.com/rcalimlim113/CPTS-451-Crowd-funding-Platform/blob/main/app/schema.sql)
  * [pychache](link here)
  * [init.py](https://github.com/rcalimlim113/CPTS-451-Crowd-funding-Platform/blob/main/app/__init__.py)
  * [db.py](link here)
