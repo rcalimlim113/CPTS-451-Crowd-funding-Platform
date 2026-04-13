@@ -13,7 +13,7 @@ pip install Flask
 
 1. Install python 3.10 or above (3.12 used here)
 2. pip install Flask
-3. flask --app app run init-db
+3. flask --app app init-db
 4. flask --app app run --debug 
 5.  Follow the web link to see the website
 
