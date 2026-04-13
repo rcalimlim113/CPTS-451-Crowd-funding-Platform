@@ -55,7 +55,7 @@ Please review the following code files, which were actively developed during thi
  * [schema.sql](https://github.com/rcalimlim113/CPTS-451-Crowd-funding-Platform/blob/main/app/schema.sql)
  * [pychache](link here)
  * [init.py](https://github.com/rcalimlim113/CPTS-451-Crowd-funding-Platform/blob/main/app/__init__.py)
- * [db.py](link here)
+ * [db.py](https://github.com/rcalimlim113/CPTS-451-Crowd-funding-Platform/blob/main/app/db.py)
  
 ## Retrospective Summary
 Here's what went well:
