@@ -1,7 +1,8 @@
 -- drop if existing (for testing)
 DROP TABLE IF EXISTS campaign_updates;
 DROP TABLE IF EXISTS campaign_share;
-DROP TABLE IF EXISTS Pays_to;
+--DROP TABLE IF EXISTS Pays_to;
+DROP TABLE IF EXISTS user_donation;
 DROP TABLE IF EXISTS PAYMENT_METHODS;
 DROP TABLE IF EXISTS Donations;
 DROP TABLE IF EXISTS campaigns;
@@ -74,19 +75,30 @@ create table Donations(
     message VARCHAR2(500),
     amount DECIMAL(10,2) NOT NULL CHECK (amount > 0),
     donated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- donation time
-    payment_status VARCHAR(20) DEFAULT 'pending' CHECK (payment_status IN ('pending', 'completed', 'failed', 'refunded'))
+    payment_status VARCHAR(20) DEFAULT 'pending' CHECK (payment_status IN ('pending', 'completed', 'failed', 'refunded')),
+    campaign_id INT,
+    CONSTRAINT fk_donations_to_campaignID FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id),
 );
 
--- Pays relationship
-create table pays_to(
+-- -- Pays relationship
+-- create table pays_to(
+--     donation_id INT PRIMARY KEY,
+--     payment_method_id INT,
+--     campaign_id INT,
+--     user_id INT,
+--     CONSTRAINT fk_paysTo_to_paymentMethodID FOREIGN KEY (payment_method_id) REFERENCES Payment_Methods(payment_method_id),  -- now reuses user_id in Payment_methods table instead
+--     CONSTRAINT fk_paysTo_to_campaignID FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id),                         -- see line 78
+--     CONSTRAINT fk_paysTo_to_donationID FOREIGN KEY (donation_id) REFERENCES donations(donation_id),                         -- see user_donation table
+--     CONSTRAINT fk_paysTo_to_userID FOREIGN KEY (user_id) REFERENCES users(user_id)                                          -- see user_donation table
+-- );
+
+create table user_donation(
     donation_id INT PRIMARY KEY,
-    payment_method_id INT,
-    campaign_id INT,
     user_id INT,
-    CONSTRAINT fk_paysTo_to_paymentMethodID FOREIGN KEY (payment_method_id) REFERENCES Payment_Methods(payment_method_id),
-    CONSTRAINT fk_paysTo_to_campaignID FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id),
-    CONSTRAINT fk_paysTo_to_donationID FOREIGN KEY (donation_id) REFERENCES donations(donation_id),
-    CONSTRAINT fk_paysTo_to_userID FOREIGN KEY (user_id) REFERENCES users(user_id)
+    payment_token VARCHAR(100) NOT NULL, -- NEEDS CHECK FOR EXISTING PAYMENT_TOKEN         -- No reference key, keeps donation while able to delete payment method
+    CONSTRAINT fk_userDonation_to_donationID FOREIGN KEY (donation_id) REFERENCES donations(donation_id), 
+    CONSTRAINT fk_userDonation_to_userID FOREIGN KEY (user_id) REFERENCES users(user_id)
+
 );
 
 -- --- SEED DATA ---
