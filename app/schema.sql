@@ -96,7 +96,7 @@ create table user_donations(
     donation_id INT PRIMARY KEY,
     user_id INT NOT NULL, -- NEEDS CHECK FOR EXISTING USER      -- No reference key, keeps donation instance while able to delete a user
     payment_token VARCHAR(100) NOT NULL, -- NEEDS CHECK FOR EXISTING PAYMENT_TOKEN         -- No reference key, keeps donation instance while able to delete payment method
-    CONSTRAINT fk_userDonation_to_donationID FOREIGN KEY (donation_id) REFERENCES donations(donation_id), 
+    CONSTRAINT fk_userDonation_to_donationID FOREIGN KEY (donation_id) REFERENCES donations(donation_id)
 
 );
 
