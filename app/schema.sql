@@ -77,7 +77,7 @@ create table Donations(
     donated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- donation time
     payment_status VARCHAR(20) DEFAULT 'pending' CHECK (payment_status IN ('pending', 'completed', 'failed', 'refunded')),
     campaign_id INT,
-    CONSTRAINT fk_donations_to_campaignID FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id),
+    CONSTRAINT fk_donations_to_campaignID FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id)
 );
 
 -- -- Pays relationship
@@ -88,8 +88,8 @@ create table Donations(
 --     user_id INT,
 --     CONSTRAINT fk_paysTo_to_paymentMethodID FOREIGN KEY (payment_method_id) REFERENCES Payment_Methods(payment_method_id),  -- now reuses user_id in Payment_methods table instead
 --     CONSTRAINT fk_paysTo_to_campaignID FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id),                         -- see line 78
---     CONSTRAINT fk_paysTo_to_donationID FOREIGN KEY (donation_id) REFERENCES donations(donation_id),                         -- see user_donation table
---     CONSTRAINT fk_paysTo_to_userID FOREIGN KEY (user_id) REFERENCES users(user_id)                                          -- see user_donation table
+--     CONSTRAINT fk_paysTo_to_donationID FOREIGN KEY (donation_id) REFERENCES donations(donation_id),                         -- see user_donations table
+--     CONSTRAINT fk_paysTo_to_userID FOREIGN KEY (user_id) REFERENCES users(user_id)                                          -- see user_donations table
 -- );
 
 create table user_donations(
@@ -122,18 +122,18 @@ VALUES
 (1, 2, 'tok_visa_111', 'VISA'),
 (2, 3, 'tok_paypal_222', 'PayPal');
 
--- Donations (Matches your column order: id, message, amount, time, status)
-INSERT INTO donations (donation_id, message, amount, donated_at, payment_status)
+-- Donations (Matches your column order: donations id, message, amount, time, status, campaign id)
+INSERT INTO donations (donation_id, message, amount, donated_at, payment_status, campaign_id)
 VALUES 
-(1, 'Keep up the good work!', 600.00, '2026-04-11 10:00:00', 'completed'),
-(2, 'Happy to help.', 50.13, '2026-04-12 14:30:00', 'completed');
+(1, 'Keep up the good work!', 600.00, '2026-04-11 10:00:00', 'completed', 1),
+(2, 'Happy to help.', 50.13, '2026-04-12 14:30:00', 'completed', 2);
 
--- Pays Relationship (Links everything together)
--- (donation_id, payment_method_id, campaign_id, user_id)
-INSERT INTO user_donation (donation_id, payment_method_id, campaign_id, user_id)
+-- User Donations Relationship (Links everything together)
+-- (donation_id, user_id, payment_token)
+INSERT INTO user_donations (donation_id, user_id, payment_token)
 VALUES 
-(1, 1, 1, 2),
-(2, 2, 2, 3);
+(1, 2, 'tok_visa_111'),
+(2, 3, 'tok_paypal_222');
 
 -- Updates
 INSERT INTO campaign_updates (campaign_id, update_id, title, content)
